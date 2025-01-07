@@ -14,19 +14,20 @@
       system:
       let
         pkgs = nixpkgs.legacyPackages.${system};
-				python = pkgs.python312Full.debug;
+        python = pkgs.python312Full;
+        # https://github.com/NixOS/nixpkgs/blob/nixos-unstable/pkgs/development/libraries/boost/generic.nix#L285
         boostDev = (pkgs.boost.override { inherit python; enablePython = true; }).dev;
       in
       {
         formatter = pkgs.nixfmt-rfc-style;
         packages.boost = boostDev;
         packages.default = pkgs.stdenv.mkDerivation {
-          name = "robot";
+          name = "boost-python";
           src = ./.;
           buildInputs = with pkgs; [
             cmake
             boostDev
-						python
+			python
           ];
           cmakeFlags = [
             "-DCMAKE_CXX_STANDARD=20"
